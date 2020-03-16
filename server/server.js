@@ -11,8 +11,14 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
+app.get('/', function(req, res) {
+    res.status(200).send({
+        message: 'Servidor activo y corriendo'
+    });
+});
+
 app.get('/usuario', function(req, res) {
-    res.json('get Usuario')
+    res.json('get Usuario');
 });
 
 app.post('/usuario', function(req, res) {
