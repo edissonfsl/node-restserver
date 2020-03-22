@@ -1,9 +1,10 @@
 require('./config/config');
 
 const express = require('express');
-const app = express();
-
 var bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+
+const app = express();
 
 /// parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -11,41 +12,17 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
-app.get('/', function(req, res) {
-    res.status(200).send({
-        message: 'Servidor activo y corriendo'
-    });
+// routes
+app.use(require('./routes/usuario'));
+
+// db connection
+console.log(process.env.URLDB);
+mongoose.connect(process.env.URLDB, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true }, (err, res) => {
+    if (err) throw err;
+    console.log('Conexión a Base de Datos exitosa');
 });
 
-app.get('/usuario', function(req, res) {
-    res.json('get Usuario');
-});
-
-app.post('/usuario', function(req, res) {
-    let body = req.body;
-    if (body.nombre === undefined) {
-        res.status(400).json({
-            ok: false,
-            mensaje: 'No se a especificado el body'
-        });
-    } else {
-        res.json({
-            persona: body
-        });
-    }
-});
-
-app.put('/usuario/:id', function(req, res) {
-    let id = req.params.id;
-    res.json({
-        id
-    });
-});
-
-app.delete('/usuario', function(req, res) {
-    res.json('delete Usuario')
-});
-
+// server
 app.listen(process.env.PORT, () => {
     console.log('Servidor corriendo en el puerto 3000');
 });
